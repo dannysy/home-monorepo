@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "auth"
+version = "0.1.0"
+description = ""
+authors = ["danilasykulev <dsykulev@digital-spirit.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.110.1"
+pydantic = "^2.7.0"
+load-dotenv = "^0.1.0"
+uvicorn = {extras = ["standard"], version = "^0.29.0"}
+loguru = "^0.7.2"
+passlib = "^1.7.4"
+fastapi-jwt = "^0.2.0"
+python-multipart = "^0.0.9"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
