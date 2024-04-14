@@ -1,20 +1,36 @@
+# Basic
 *.pyc
 *.pyo
 *.egg-info
 *.swp
+*.egg
 __pycache__
+.DS_Store
+.installed.cfg
+.tox
+.coverage*
+.pytest_cache/
+.pdm-python
+pdm.lock
+.idea/
+.venv
+venv/
+cache
+
+# Project
+data_base/.env
+
+
+
+# Other
 build
 develop-eggs
 dist
 eggs
 parts
-.DS_Store
-.installed.cfg
 docs/_build
 htmlcov/
-venv/
-.tox
-.coverage*
-.pytest_cache/
-*.egg
-.idea/
+
+
+
+
