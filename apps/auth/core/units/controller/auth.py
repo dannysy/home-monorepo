@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi_jwt import JwtAccessBearerCookie, JwtRefreshBearerCookie
-from ..config import AppConfig
+from fastapi_jwt import JwtAccessBearerCookie
 from passlib.context import CryptContext
-from .models import TokenRequest, TokenResponse
 
 router = APIRouter(prefix="", tags=["auth"])
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

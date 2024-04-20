@@ -1,25 +1,60 @@
-[tool.poetry]
-name = "auth"
-version = "0.1.0"
+
+[project]
+name = ""
+version = ""
 description = ""
-authors = ["danilasykulev <dsykulev@digital-spirit.ru>"]
-readme = "README.md"
+authors = [
+    {name = "puryginm", email = "puryginm@gmail.com"},
+]
+dependencies = [
+    "fastapi==0.110.1",
+    "fastapi-jwt-auth==0.5.0",
+    "sqlalchemy[asyncio]==2.0.29",
+    "pydantic-settings==2.2.1",
+    "fastapi-jwt>=0.2.0",
+    "passlib>=1.7.4",
+    "python-multipart>=0.0.9",
+    "asyncpg>=0.29.0",
+]
+requires-python = ">=3.12"
+license = {text = "COMMERCIAL"}
 
-[tool.poetry.dependencies]
-python = "^3.12"
-fastapi = "^0.110.1"
-pydantic = "^2.7.0"
-load-dotenv = "^0.1.0"
-uvicorn = {extras = ["standard"], version = "^0.29.0"}
-loguru = "^0.7.2"
-passlib = "^1.7.4"
-fastapi-jwt = "^0.2.0"
-python-multipart = "^0.0.9"
+[tool.pdm.dev-dependencies]
+dev = [
+    "httpx>=0.27.0",
+    "pytest>=8.1.1",
+    "docker>=7.0",
+    "sqlalchemy-utils==0.41.2",
+    "pytest-timeout>=2.3.1",
+    "pytest-asyncio>=0.23.6",
+]
 
+[tool.pdm.scripts]
+service = "hypercorn core.main:app --bind 0.0.0.0:18000"
+db = "docker run --env-file .env -v ${PWD}/cache/postgresql:/bitnami/postgresql -p $POSTGRESQL_PORT:5432 --rm bitnami/postgresql:15"
+test = "pytest --cov -vv"
+lint = "ruff check ."
 
-[tool.poetry.group.dev.dependencies]
-black = "*"
+[tool.ruff]
+line-length = 120
+exclude = ["__pypackages__", "cache"]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.black]
+line-length = 120
+target-version = ['py311']
+include = '\.pyi?$'
+
+[tool.coverage]
+[tool.coverage.run]
+branch = true
+source = ["core"]
+omit = ["test_*", "conftest.py"]
+
+[tool.coverage.report]
+fail_under = 20
+precision = 2
+skip_covered = true
+
+[tool.pytest.ini_options]
+addopts = "--ignore=__pypackages__ --ignore=cache --ignore=conftest.py --maxfail=1"
+asyncio_mode = "auto"
