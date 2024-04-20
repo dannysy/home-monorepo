@@ -3,3 +3,4 @@
 .env
 .pdm-python
 pdm.lock
+cache/
