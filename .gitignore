@@ -20,7 +20,10 @@ cache
 # Project
 data_base/.env
 
-
+# Apps
+apps/auth/.idea
+apps/auth/.venv
+apps/auth/.env
 
 # Other
 build
@@ -30,6 +33,7 @@ eggs
 parts
 docs/_build
 htmlcov/
+
 
 
 
