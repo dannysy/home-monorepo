@@ -8,10 +8,10 @@ from .models import TokenRequest, TokenResponse
 router = APIRouter(prefix="", tags=["auth"])
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 access_security = JwtAccessBearerCookie(
-    secret_key="secret", #TODO Replace with real secret from config
+    secret_key="secret",  # TODO Replace with real secret from config
     auto_error=False,
     access_expires_delta=900,
-    refresh_expires_delta=86400
+    refresh_expires_delta=86400,
 )
 # TODO Replace with real db
 fake_users_db = {
@@ -20,9 +20,10 @@ fake_users_db = {
         "user_id": "ca726425-c408-4246-ac3c-544514f197c3",
         "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
         "created_at": "22/12/2022 11:00:00",
-        "deleted_at": ""
+        "deleted_at": "",
     }
 }
+
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -46,13 +47,16 @@ def authenticate_user(fake_db, username: str, password: str):
         return False
     return user
 
+
 # TODO Implement user registration metod
+
 
 @router.post("/register")
 async def register_user(username: str, password: str):
     hashed_password = pwd_context.hash(password)
     # Сохраните пользователя в базе данных
     return {"username": username, "hashed_password": hashed_password}
+
 
 # TODO Создать хранилище для токенов (В бд таблицу )
 # class UserToken(Base):
@@ -81,11 +85,11 @@ async def token(
         case "password":
             user = authenticate_user(fake_users_db, form_data.username, form_data.password)
             if not user:
-                raise HTTPException(status_code=400,detail="Bad request")
+                raise HTTPException(status_code=400, detail="Bad request")
             access_token = access_security.create_access_token(subject="подставить id пользователя")
             refresh_token = access_security.create_refresh_token(subject="подставить id пользователя")
             access_security.set_access_cookie(response=response, access_token=access_token, expires_delta=900)
             access_security.set_refresh_cookie(response=response, refresh_token=refresh_token, expires_delta=86400)
             return response
         case _:
-            raise HTTPException(status_code=400,detail="Bad request")
+            raise HTTPException(status_code=400, detail="Bad request")

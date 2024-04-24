@@ -10,7 +10,7 @@ class AppConfigError(Exception):
 
 
 def _parse_bool(val: Union[str, bool]) -> bool:
-    return val if type(val) == bool else val.lower() in ['true', 'yes', '1']
+    return val if type(val) == bool else val.lower() in ["true", "yes", "1"]
 
 
 class AppConfig:
@@ -24,7 +24,7 @@ class AppConfig:
 
             default_value = getattr(self, field, None)
             if default_value is None and env.get(field) is None:
-                raise AppConfigError('The {} field is required'.format(field))
+                raise AppConfigError("The {} field is required".format(field))
 
             try:
                 var_type = get_type_hints(AppConfig)[field]
@@ -35,11 +35,8 @@ class AppConfig:
 
                 self.__setattr__(field, value)
             except ValueError:
-                raise AppConfigError('Unable to cast value of "{}" to type "{}" for "{}" field'.format(
-                        env[field],
-                        var_type,
-                        field
-                    )
+                raise AppConfigError(
+                    'Unable to cast value of "{}" to type "{}" for "{}" field'.format(env[field], var_type, field)
                 )
 
     def __repr__(self):

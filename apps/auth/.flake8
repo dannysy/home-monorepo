@@ -1,5 +1,6 @@
 [flake8]
 exclude =
+    .venv,
     tests/*
 max-line-length = 140
 max-complexity = 12
