@@ -10,12 +10,17 @@ class AppConfigError(Exception):
 
 
 def _parse_bool(val: Union[str, bool]) -> bool:
-    return val if type(val) == bool else val.lower() in ["true", "yes", "1"]
+    return val if type(val) == bool else val.lower() in ["true", "yes", "1"]  # noqa: E721
 
 
 class AppConfig:
     AUTH_IS_DEBUG: bool
     AUTH_JWT_SECRET: str
+    AUTH_POSTGRES_URI: str
+    AUTH_REDIS_HOST: str
+    AUTH_REDIS_PORT: int
+    AUTH_WHATSUP_INSTANCE_ID: str
+    AUTH_WHATSUP_INSTANCE_TOKEN: str
 
     def __init__(self, env):
         for field in self.__annotations__:

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from loguru import logger
+# from loguru import logger
 
 from .config import Config
 from .ini import api

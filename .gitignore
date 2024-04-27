@@ -16,6 +16,8 @@ pdm.lock
 .venv
 venv/
 cache
+.vscode
+.env
 
 # Project
 data_base/.env
