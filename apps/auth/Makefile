@@ -91,6 +91,11 @@ mig-up:
 	@alembic upgrade head
 .PHONY: mig-up
 
+# Создание docker образа
+dki:
+	@docker build --no-cache -t $(SERVICE_NAME):$(TAG) .
+.PHONY: dki
+
 # Help
 h:
 	@echo "Usage: make [target]"
