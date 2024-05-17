@@ -53,9 +53,11 @@ RUN chmod +x /docker-entrypoint.sh
 
 # Create user with the name poetry
 RUN groupadd -g 1500 poetry && \
-    useradd -m -u 1500 -g poetry poetry
+useradd -m -u 1500 -g poetry poetry
 
 COPY --chown=poetry:poetry auth /app/auth
+COPY alembic.ini /app/alembic.ini
+COPY alembic /app/alembic
 USER poetry
 WORKDIR /app
 
