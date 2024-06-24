@@ -1,0 +1,38 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+- host: httpbin.org
+  name: example-service
+  port: 80
+  protocol: http
+  routes:
+  - name: example-route
+    paths:
+    - /mock
+    strip_path: true
+    plugins:
+      - name: custom-auth
+        config:
+          validation_endpoint: http://auth:8000/validate
+          token_header: Authorization
+          ssl_verify: true
+- host: auth
+  name: auth-service
+  port: 8000
+  protocol: http
+  routes:
+  - name: auth-route
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    paths:
+    - /healthcheck
+    - /register
+    - /validate
+    - /token
+    - /users/me
+    strip_path: false
+    preserve_host: false 

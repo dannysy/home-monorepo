@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-kong-gateway
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: kong-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kong-gateway
+  template:
+    metadata:
+      labels:
+        app: kong-gateway
+    spec:
+      containers:
+        - name: kong-gateway
+          image: "kong/kong-gateway:3.6.1.4"
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+          volumeMounts:
+            - name: declarative
+              mountPath: ./etc/kong/declarative
+            - name: custom-auth
+              mountPath: ./etc/kong/plugins/custom-auth
+          ports:
+            - containerPort: 8000
+            - containerPort: 8002
+      volumes:
+        - name: declarative
+          hostPath:
+            path: /usr/local/kong/declarative  
+            type: Directory     
+        - name: custom-auth
+          hostPath:
+            path: /usr/local/share/lua/5.1/kong/plugins/custom-auth 
+            type: Directory     

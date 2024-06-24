@@ -6,7 +6,7 @@ from typing import Annotated
 
 from auth.repository.db import User, Session
 from sqlalchemy import or_, cast, TEXT
-from fastapi import Form, APIRouter, Depends, HTTPException, status
+from fastapi import Response, Request, Form, APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from auth import config as app_config
 from jose import JWTError, jwt
@@ -85,6 +85,16 @@ async def authorize(phone: str):
     #     raise HTTPException(status_code=response.code, detail=response.data)
     return code
 
+@router.post("/validate")
+async def validate(req: Request, response: Response):
+    token = req.headers["Authorization"]
+    try:
+        payload = jwt.decode(token, app_config.Config.AUTH_JWT_SECRET, algorithms=["HS256"])
+        user_id = payload.get("sub")
+        response.headers["X-User-ID"] = user_id
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return
 
 @router.post("/register")
 async def register_user(phone: str, password: str, fio: str | None = None, email: str | None = None):
@@ -101,7 +111,6 @@ async def register_user(phone: str, password: str, fio: str | None = None, email
     session.commit()
     session.close()
     return {"message": "User registered"}
-
 
 @router.post("/token")
 async def token(

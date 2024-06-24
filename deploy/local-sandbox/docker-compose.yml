@@ -1,0 +1,78 @@
+version: '3.9'
+
+x-kong-config: &kong-env
+  KONG_DATABASE: off
+  KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yaml
+  KONG_PROXY_ACCESS_LOG: /dev/stdout 
+  KONG_ADMIN_ACCESS_LOG: /dev/stdout 
+  KONG_PROXY_ERROR_LOG: /dev/stderr 
+  KONG_ADMIN_ERROR_LOG: /dev/stderr 
+  KONG_ADMIN_LISTEN: 0.0.0.0:8001
+  KONG_ADMIN_GUI_URL: http://localhost:8002
+  KONG_PLUGINS: custom-auth
+
+x-auth-redis-config: &auth-redis-env
+  REDIS_HOST: auth-redis
+  REDIS_PORT: 6379
+
+x-auth-postgres-config: &auth-postgres-env
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: auth
+
+services:
+# gateway
+  kong-gateway:
+    image: kong/kong-gateway:3.6.1.4
+    volumes:
+      - ./kong/declarative:/usr/local/kong/declarative
+      - ./kong/plugins/custom-auth:/usr/local/share/lua/5.1/kong/plugins/custom-auth
+    networks:
+      - kong-net
+    environment:
+      <<: *kong-env
+    ports:
+      - 8000:8000 
+      - 8443:8443 
+      - 8001:8001 
+      - 8444:8444 
+      - 8002:8002 
+      - 8445:8445 
+      - 8003:8003 
+      - 8004:8004 
+    healthcheck:
+      test: ["CMD", "kong", "health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    restart: on-failure:5
+  # auth service
+  auth:
+    image: auth:0.0.2
+    env_file:
+      - .env_dk
+    depends_on:
+      - auth-postgres
+      - auth-redis
+      - kong-gateway
+    networks:
+      - kong-net
+      - auth-net
+  # auth db
+  auth-postgres:
+    image: postgres:14
+    environment:
+      <<: *auth-postgres-env
+    networks:
+      - auth-net
+  # auth cache
+  auth-redis:
+    image: redis:7.2.5
+    environment:
+      <<: *auth-redis-env
+    networks:
+      - auth-net
+networks:
+  kong-net:
+    external: true
+  auth-net:
